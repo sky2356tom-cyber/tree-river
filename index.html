@@ -1,0 +1,875 @@
+<!DOCTYPE html> 
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전외국인커뮤니티센터 한국어 수업</title>
+<style>
+  /* 워드프레스 테마 충돌 방지를 위한 전용 컨테이너 스타일 */
+  #dfcc-korean-app {
+    font-family: 'Pretendard', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    max-width: 1000px;
+    margin: 20px auto;
+    color: #222; 
+    line-height: 1.6;
+    box-sizing: border-box; 
+  }
+  #dfcc-korean-app * {
+    box-sizing: border-box;
+  }
+
+  /* 헤더 영역 */
+  .dfcc-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #ffffff;
+    padding: 32px 24px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
+  }
+  .dfcc-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .dfcc-header h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .dfcc-header p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.92;
+  }
+
+  /* 1단계: 교재 선택 탭 */
+  .dfcc-step-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #4b5563;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dfcc-book-tabs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .dfcc-book-btn {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  }
+  .dfcc-book-btn:hover {
+    border-color: #93c5fd;
+    background: #f8fafc;
+  }
+  .dfcc-book-btn.active {
+    background: #1e40af;
+    border-color: #1e40af;
+    color: #ffffff;
+    box-shadow: 0 6px 15px rgba(30, 64, 175, 0.25);
+  }
+
+  /* 2단계: 단계(레벨) 선택 버튼 */
+  .dfcc-level-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 16px;
+    background: #f1f5f9;
+    border-radius: 12px;
+  }
+  .dfcc-level-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .dfcc-level-btn:hover {
+    background: #e2e8f0;
+  }
+  .dfcc-level-btn.active {
+    background: #0f766e;
+    border-color: #0f766e;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
+  }
+
+  /* 3단계: 단원(과) 리스트 */
+  .dfcc-unit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .dfcc-unit-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+  .dfcc-unit-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .dfcc-unit-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    user-select: none;
+  }
+  .dfcc-unit-header:hover {
+    background: #f8fafc;
+  }
+  .dfcc-unit-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dfcc-unit-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .dfcc-unit-num {
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 800;
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #bfdbfe;
+  }
+  .dfcc-unit-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+  }
+  .dfcc-unit-meta {
+    font-size: 0.88rem;
+    color: #64748b;
+  }
+  .dfcc-unit-arrow {
+    font-size: 0.9rem;
+    color: #64748b;
+    transition: transform 0.25s ease;
+    margin-left: 12px;
+  }
+  .dfcc-unit-card.open .dfcc-unit-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* 4단계: 과 클릭 시 나오는 상세 영역 */
+  .dfcc-unit-body {
+    display: none;
+    padding: 18px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+  .dfcc-unit-card.open .dfcc-unit-body {
+    display: block;
+  }
+  .dfcc-wp-page-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+  .dfcc-wp-page-bar span {
+    font-size: 0.92rem;
+    color: #1e3a8a;
+    font-weight: 600;
+  }
+  .dfcc-page-link-btn {
+    background: #2563eb;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .dfcc-page-link-btn:hover {
+    background: #1d4ed8;
+  }
+
+  /* 5단계: 그날 배울 각각의 제목 아코디언 (클릭 시 오디오 + 오디오 텍스트 표시) */
+  .dfcc-lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .dfcc-lesson-item {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+  .dfcc-lesson-title-btn {
+    width: 100%;
+    text-align: left;
+    background: #ffffff;
+    border: none;
+    padding: 13px 16px;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #1e293b;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.15s;
+  }
+  .dfcc-lesson-title-btn:hover {
+    background: #f1f5f9;
+  }
+  .dfcc-lesson-content {
+    display: none;
+    padding: 16px;
+    border-top: 1px dashed #cbd5e1;
+    background: #fcfcfd;
+  }
+  .dfcc-lesson-item.active .dfcc-lesson-content {
+    display: block;
+  }
+  .dfcc-audio-box {
+    margin-bottom: 14px;
+  }
+  .dfcc-audio-box label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f766e;
+    margin-bottom: 6px;
+  }
+  .dfcc-audio-box audio {
+    width: 100%;
+    height: 40px;
+  }
+  .dfcc-script-box {
+    background: #f8fafc;
+    border-left: 4px solid #0f766e;
+    padding: 14px 16px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #334155;
+    white-space: pre-line;
+  }
+  .dfcc-doc-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #0f766e !important;
+    text-decoration: underline !important;
+  }
+
+  @media (max-width: 640px) {
+    .dfcc-header h1 { font-size: 1.45rem; }
+    .dfcc-unit-header { padding: 14px 16px; }
+    .dfcc-unit-title { font-size: 1rem; }
+  }
+</style>
+
+<div id="dfcc-korean-app">
+  <!-- 상단 기관 헤더 -->
+  <div class="dfcc-header">
+    <div class="dfcc-badge">Daejeon Foreigner Community Center</div>
+    <h1>대전외국인커뮤니티센터 무료 한국어 수업</h1>
+    <p>교재와 단계를 선택하시면 각 단원의 수업 오디오와 텍스트(대본) 문서를 학습하실 수 있습니다.</p>
+  </div>
+
+  <!-- 1단계: 교재 선택 -->
+  <div class="dfcc-step-label">1. 교재를 선택하세요 (Select Textbook)</div>
+  <div class="dfcc-book-tabs" id="dfcc-book-tabs"></div>
+
+  <!-- 2단계: 단계(레벨) 선택 -->
+  <div class="dfcc-step-label">2. 단계를 선택하세요 (Select Level)</div>
+  <div class="dfcc-level-tabs" id="dfcc-level-tabs"></div>
+
+  <!-- 3~5단계: 과 목록 및 오디오/텍스트 표시 영역 -->
+  <div class="dfcc-step-label" id="dfcc-unit-heading">3. 단원(과)을 클릭한 후 학습할 제목을 선택하세요</div>
+  <div class="dfcc-unit-list" id="dfcc-unit-list"></div>
+</div>
+
+<script>
+(function() {
+  /**
+   * ============================================================================
+   * [워드프레스 페이지 & 오디오 파일 연결 안내]
+   * 각 단원(unit) 객체에 pageUrl과 lessons 배열을 넣어 워드프레스 미디어 URL과
+   * 워드프레스 페이지 주소를 연결할 수 있습니다.
+   * ============================================================================
+   */
+
+  const courseData = {
+    /* 1. 한국어와 한국문화 */
+    "한국어와 한국문화": {
+      "기초": [
+        {
+          unit: "0단원", title: "한글의 기초", meta: "교재 8쪽",
+          pageUrl: "#link-kip-basic-0",
+          lessons: [
+            { title: "1. 한글의 기초 (8쪽)", audioUrl: "", docUrl: "#doc-0-1", script: "[오디오 텍스트]\n한글의 기본 모음과 자음 소리를 듣고 따라 읽어 보세요." }
+          ]
+        },
+        {
+          unit: "1단원", title: "모음과 자음 I", meta: "모음 ①: ㅏ, ㅑ, ㅓ, ㅕ, ㅗ, ㅛ, ㅜ, ㅠ, ㅡ, ㅣ (14쪽) | 자음 ①: ㄱ~ㅎ (18쪽)",
+          pageUrl: "#link-kip-basic-1",
+          lessons: [
+            { title: "1. 모음 ①: ㅏ, ㅑ, ㅓ, ㅕ, ㅗ, ㅛ, ㅜ, ㅠ, ㅡ, ㅣ (14쪽)", audioUrl: "", docUrl: "#doc-1-1", script: "[오디오 텍스트]\nㅏ, ㅑ, ㅓ, ㅕ, ㅗ, ㅛ, ㅜ, ㅠ, ㅡ, ㅣ" },
+            { title: "2. 자음 ①: ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ, ㅈ, ㅊ, ㅋ, ㅌ, ㅍ, ㅎ (18쪽)", audioUrl: "", docUrl: "#doc-1-2", script: "[오디오 텍스트]\nㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ, ㅈ, ㅊ, ㅋ, ㅌ, ㅍ, ㅎ" }
+          ]
+        },
+        {
+          unit: "2단원", title: "모음과 자음 II", meta: "모음 ②: ㅐ, ㅒ, ㅔ, ㅖ, ㅘ, ㅙ, ㅚ, ㅝ, ㅞ, ㅟ, ㅢ (28쪽) | 자음 ②: ㄲ, ㄸ, ㅃ, ㅆ, ㅉ (33쪽)",
+          pageUrl: "#link-kip-basic-2",
+          lessons: [
+            { title: "1. 모음 ②: ㅐ, ㅒ, ㅔ, ㅖ, ㅘ, ㅙ, ㅚ, ㅝ, ㅞ, ㅟ, ㅢ (28쪽)", audioUrl: "", docUrl: "#doc-2-1", script: "[오디오 텍스트]\nㅐ, ㅒ, ㅔ, ㅖ, ㅘ, ㅙ, ㅚ, ㅝ, ㅞ, ㅟ, ㅢ" },
+            { title: "2. 자음 ②: ㄲ, ㄸ, ㅃ, ㅆ, ㅉ (33쪽)", audioUrl: "", docUrl: "#doc-2-2", script: "[오디오 텍스트]\nㄲ, ㄸ, ㅃ, ㅆ, ㅉ" }
+          ]
+        },
+        {
+          unit: "3단원", title: "받침과 유용한 표현", meta: "받침 (39쪽) | 유용한 표현 (48쪽)",
+          pageUrl: "#link-kip-basic-3",
+          lessons: [
+            { title: "1. 받침 (39쪽)", audioUrl: "", docUrl: "#doc-3-1", script: "[오디오 텍스트]\n받침 발음 연습" },
+            { title: "2. 유용한 표현 (48쪽)", audioUrl: "", docUrl: "#doc-3-2", script: "[오디오 텍스트]\n유용한 인사 및 교실 표현 연습" }
+          ]
+        }
+      ],
+      "초급 1": [
+        { unit: "1과", title: "안녕하세요?", meta: "주제: 인사와 소개 | 어휘: 이름, 직업, 국적 | 문법: 명+이에요/예요, 명+은/는" },
+        { unit: "2과", title: "방에 책상이 있어요", meta: "주제: 사물 | 어휘: 일상생활 사물, 장소① | 문법: 명+이/가, 명+에 있어요" },
+        { unit: "3과", title: "한국어를 배워요", meta: "주제: 일상생활 | 어휘: 기본 형용사, 기본 동사① | 문법: 동·형-어요, 명+을/를" },
+        { unit: "4과", title: "라흐만 씨가 식당에 가요", meta: "주제: 장소 | 어휘: 장소② | 문법: 명+에 가다, 명+에서" },
+        { unit: "5과", title: "오늘은 5월 5일이에요", meta: "주제: 날짜와 요일 | 어휘: 수①, 날짜, 요일 | 문법: 명+에, 명+이/가 아니에요" },
+        { unit: "6과", title: "9시부터 6시까지 일해요", meta: "주제: 하루 일과 | 어휘: 수②, 기본 동사② | 문법: 명+부터 ~ 명+까지, 안 동·형" },
+        { unit: "7과", title: "김치찌개 하나 주세요", meta: "주제: 음식 | 어휘: 음식, 식당 관련 표현 | 문법: 동-고 싶다, 동-으세요" },
+        { unit: "8과", title: "칫솔하고 치약을 삽니다", meta: "주제: 쇼핑 | 어휘: 단위, 가격 | 문법: 명+하고 명, 동·형-습니다, -습니까?" },
+        { unit: "9과", title: "지난 주말에 친구를 만났어요", meta: "주제: 주말 | 어휘: 주말 활동 | 문법: 동·형-었-, 명+도" },
+        { unit: "복습 1", title: "복습 1 (1~9과)", meta: "1과 ~ 9과 종합 복습" },
+        { unit: "10과", title: "아버지는 요리를 잘하세요", meta: "주제: 가족 | 어휘: 가족 관계, 높임말 | 문법: 동·형-으시-, 동·형-지만" },
+        { unit: "11과", title: "어버이날에 부모님께 꽃을 드려요", meta: "주제: 특별한 날 | 어휘: 특별한 날 관련 어휘 | 문법: 명+에게/한테/께, 동-어 주다" },
+        { unit: "12과", title: "이번 휴가에 뭐 할 거예요?", meta: "주제: 휴가 계획 | 어휘: 휴일, 휴가 관련 어휘 | 문법: 동-을 거예요, 동·형-고(나열)" },
+        { unit: "13과", title: "버스로 공항에 가요", meta: "주제: 교통 | 어휘: 교통수단 | 문법: 명+으로(수단), 동-으러 가다/오다" },
+        { unit: "14과", title: "저녁 7시에 만날까요?", meta: "주제: 약속 | 어휘: 약속 표현 | 문법: 동-을까요?, 못 동" },
+        { unit: "15과", title: "오늘 날씨가 정말 덥네요", meta: "주제: 날씨 | 어휘: 계절, 날씨 | 문법: 동·형-네요, 명+보다" },
+        { unit: "16과", title: "배가 아파서 병원에 가요", meta: "주제: 병원 | 어휘: 병원 어휘 | 문법: 동·형-어서, 동-는 것" },
+        { unit: "17과", title: "사진을 찍지 마세요", meta: "주제: 공공장소 | 어휘: 공공장소, 공공장소에서 하는 일 | 문법: 명+으로(방향), 동-지 마세요" },
+        { unit: "18과", title: "한국 생활은 조금 힘든데 재미있어요", meta: "주제: 한국 생활 | 어휘: 한국 생활 관련 어휘 | 문법: 동·형-지요?, 동·형-는데(대조)" },
+        { unit: "복습 2", title: "복습 2 (10~18과)", meta: "10과 ~ 18과 종합 복습" }
+      ],
+      "초급 2": [
+        { unit: "1과", title: "제 고향은 경치가 아름다운 곳이에요", meta: "주제: 고향 | 어휘: 고향 소개 관련 어휘 | 문법: 명+이라고 하다, 형-은" },
+        { unit: "2과", title: "쓰레기는 내가 버릴게요", meta: "주제: 집안일 | 어휘: 집안일 관련 어휘 | 문법: 동-을게요, 동-은 다음에" },
+        { unit: "3과", title: "이걸로 한번 입어 보세요", meta: "주제: 물건 사기 | 어휘: 옷, 신발 관련 어휘 | 문법: 명+이나, 동-어 보다" },
+        { unit: "4과", title: "지금 통화할 수 있어요?", meta: "주제: 전화 | 어휘: 전화 표현 | 문법: 동-을 수 있다/없다, 반말" },
+        { unit: "5과", title: "많이 아프면 이 약을 드세요", meta: "주제: 약국 | 어휘: 약, 증상 관련 어휘 | 문법: 동·형-으면, 동-어서(순차)" },
+        { unit: "6과", title: "맛있는 음식을 먹을 때 행복해요", meta: "주제: 기분과 감정 | 어휘: 기분, 감정 관련 어휘 | 문법: 동·형-겠-, 동·형-을 때" },
+        { unit: "7과", title: "집들이니까 세제나 휴지를 가져갈게요", meta: "주제: 초대와 방문 | 어휘: 초대와 방문 어휘 | 문법: 동-을래요?, 동·형-으니까" },
+        { unit: "8과", title: "9월부터 한국어 수업을 듣기로 했어요", meta: "주제: 한국어 수업 | 어휘: 한국어 수업 신청, 한국어 과정 | 문법: 동-기 전에, 동-기로 하다" },
+        { unit: "9과", title: "근처에 자주 가는 식당이 있어요", meta: "주제: 외식 | 어휘: 맛, 식당의 특징 | 문법: 동·형-을 것 같다, 동-는" },
+        { unit: "복습 1", title: "복습 1 (1~9과)", meta: "1과 ~ 9과 종합 복습" },
+        { unit: "10과", title: "시청 옆에 있는데 가까워요", meta: "주제: 길 안내 | 어휘: 길 안내, 교통 | 문법: 동·형-는데, 동·형-기 때문에" },
+        { unit: "11과", title: "보름달을 보면서 소원을 빌어요", meta: "주제: 명절 | 어휘: 명절, 명절에 하는 일 | 문법: 형-게, 동-으면서" },
+        { unit: "12과", title: "실수를 자주 하는 편이에요", meta: "주제: 실수와 경험 | 어휘: 감정, 실수 | 문법: 동-은 적이 있다, 동·형-는 편이다" },
+        { unit: "13과", title: "소포를 보내려고 하는데요", meta: "주제: 우체국과 은행 | 어휘: 우체국, 은행 관련 어휘 | 문법: 동-으려고 하다, 동-어야 되다" },
+        { unit: "14과", title: "비자 연장 신청을 하려면 어떻게 해야 돼요?", meta: "주제: 공공 기관 | 어휘: 공공 기관 업무, 신청서 | 문법: 동-어도 되다, 동-으려면" },
+        { unit: "15과", title: "무역 회사에서 번역 일을 하고 있어요", meta: "주제: 직장 생활 | 어휘: 업무 관련 어휘 | 문법: 동-고 있다, 동-은" },
+        { unit: "16과", title: "그 행사에는 가족이나 친구를 데려가도 되거든요", meta: "주제: 행사(축제) | 어휘: 포스터, 게시판 | 문법: 동-을, 동·형-거든요(이유)" },
+        { unit: "17과", title: "잠을 푹 자면 좋겠어요", meta: "주제: 건강 | 어휘: 건강한 생활 습관, 건강 이상 증상 | 문법: 동·형-으면 좋겠다, 명+에" },
+        { unit: "18과", title: "이 수업을 신청하는 게 어때요?", meta: "주제: 문화생활 | 어휘: 문화 센터 수업, 수강 신청 | 문법: 동-는 게 어때요?, 형-어 보이다" },
+        { unit: "복습 2", title: "복습 2 (10~18과)", meta: "10과 ~ 18과 종합 복습" }
+      ],
+      "중급 1": [
+        { unit: "1과", title: "대인 관계", meta: "어휘: 대인 관계 | 문법: 동·형-고 해서, 동·형-으면 되다" },
+        { unit: "2과", title: "성격", meta: "어휘: 성격 | 문법: 형-어지다, 동·형-는 대신(에)" },
+        { unit: "3과", title: "지역 복지 서비스", meta: "어휘: 지역 복지 서비스 | 문법: 동·형-는지 알다/모르다, 동-다가" },
+        { unit: "4과", title: "교환과 환불", meta: "어휘: 교환, 환불 | 문법: 동-을 만하다, 동·형-어 가지고" },
+        { unit: "5과", title: "소비와 절약", meta: "어휘: 소비, 절약 방법 | 문법: 명+이나/밖에, 동·형-는다고 하다" },
+        { unit: "6과", title: "주거 환경", meta: "어휘: 주거 지역의 지리적 환경 | 문법: 피동, 동-자고 하다" },
+        { unit: "7과", title: "문화생활", meta: "어휘: 공연과 전시회 | 문법: 동-으라고 하다, 동·형-냐고 하다, 명+만큼" },
+        { unit: "8과", title: "음식과 요리", meta: "어휘: 양념과 맛, 요리 방법 | 문법: 사동①, 사동②" },
+        { unit: "복습 1", title: "복습 1 (1~8과)", meta: "1과 ~ 8과 종합 복습" },
+        { unit: "9과", title: "고장과 수리", meta: "어휘: 고장, 수리 | 문법: 동·형-어서 그런지, 동-나요?, 형-은가요?" },
+        { unit: "10과", title: "취업", meta: "어휘: 취업 | 문법: 동-기 위해서, 동-어 놓다" },
+        { unit: "11과", title: "부동산", meta: "어휘: 집 구하기, 계약 | 문법: 동·형-는 데다가, 동·형-는다" },
+        { unit: "12과", title: "전통 명절", meta: "어휘: 명절 풍습 | 문법: 동·형-어도, 동-게 되다" },
+        { unit: "13과", title: "직장 생활", meta: "어휘: 직장 생활 | 문법: 동-게 하다, 동-어 가다" },
+        { unit: "14과", title: "인터넷과 스마트폰", meta: "어휘: 인터넷과 스마트폰 | 문법: 동·형-잖아요, 동·형-어야" },
+        { unit: "15과", title: "고민과 상담", meta: "어휘: 인간관계, 갈등 | 문법: 동-으려던 참이다, 동-자마자" },
+        { unit: "16과", title: "기후와 날씨", meta: "어휘: 날씨, 날씨에 따른 몸의 변화 | 문법: 동·형-을 텐데, 동-어 있다" },
+        { unit: "복습 2", title: "복습 2 (9~16과)", meta: "9과 ~ 16과 종합 복습" }
+      ],
+      "중급 2": [
+        { unit: "1과", title: "한국 생활 적응", meta: "어휘: 한국 생활 적응 관련 어휘 | 문법: 동-느라고, 동·형-을수록" },
+        { unit: "2과", title: "가족의 변화", meta: "어휘: 가족의 형태와 특징 | 문법: 동·형-을 뿐만 아니라, 동·형-을 수밖에 없다" },
+        { unit: "3과", title: "생활 속의 과학", meta: "어휘: 생활 속 과학과 기술 | 문법: 동·형-는 줄 알다, 동-곤 하다" },
+        { unit: "4과", title: "한국의 의례", meta: "어휘: 한국의 의례 | 문법: 동·형-더니, 동·형-은 나머지" },
+        { unit: "5과", title: "문화유산", meta: "어휘: 문화유산 관련 어휘 | 문법: 얼마나 동·형-는지 모르다, 동·형-든지" },
+        { unit: "6과", title: "국제화 시대", meta: "어휘: 국제 사회의 모습과 특징 | 문법: 동·형-던, 동·형-을 정도로" },
+        { unit: "7과", title: "현대인의 질병", meta: "어휘: 질병과 증상 | 문법: 동-되, 동-었더니" },
+        { unit: "8과", title: "정보화 사회", meta: "어휘: 인터넷과 스마트폰으로 하는 일 | 문법: 동·형-는다면서요?, 동-을 겸 동-을 겸" },
+        { unit: "복습 1", title: "복습 1 (1~8과)", meta: "1과 ~ 8과 종합 복습" },
+        { unit: "9과", title: "사건과 사고", meta: "어휘: 사건, 사고 관련 어휘 | 문법: 동-을 뻔하다, 명+으로 인해" },
+        { unit: "10과", title: "언어생활", meta: "어휘: 올바른 언어생활, 한국어 사용의 어려움 | 문법: 동-고 말다, 동·형-는 척하다" },
+        { unit: "11과", title: "교육 제도", meta: "어휘: 한국의 교육 제도 | 문법: 명+조차, 동·형-기 마련이다" },
+        { unit: "12과", title: "선거와 투표", meta: "어휘: 선거 어휘 | 문법: 동-나 보다, 형-은가 보다, 명+이야말로" },
+        { unit: "13과", title: "환경 보호", meta: "어휘: 환경 보호 실천 어휘 | 문법: 동-는 한, 동-도록" },
+        { unit: "14과", title: "생활과 경제", meta: "어휘: 경제 관련 어휘 | 문법: 동·형-으므로, 명+은/는커녕" },
+        { unit: "15과", title: "법과 질서", meta: "어휘: 규칙과 법 | 문법: 동-다시피, 동-는 법이다" },
+        { unit: "16과", title: "이민 생활", meta: "어휘: 외국인의 고충과 노력 | 문법: 동·형-을지도 모르다, 명+치고" },
+        { unit: "복습 2", title: "복습 2 (9~16과)", meta: "9과 ~ 16과 종합 복습" }
+      ]
+    },
+
+    /* 2. 세종학당 한국어 */
+    "세종학당 한국어": {
+      "세종학당 한국어 입문": [
+        {
+          unit: "예비편", title: "한국어와 한글", meta: "주제: 한국어와 한글에 대해 이해하기 | 학습: 한글의 창제 역사와 제자 원리를 이해하기",
+          lessons: [
+            { title: "1. 한복, 한식, 한옥 알기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n한국의 전통문화인 한복, 한식, 한옥과 한국어 소개" },
+            { title: "2. 한글의 창제 역사와 제자 원리 확인하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n한글의 창제 역사와 자음·모음의 제자 원리" }
+          ]
+        },
+        {
+          unit: "1과", title: "기본 모음", meta: "주제: 기본 모음을 이해하고 사용하기 | 쓰기 과제: 기본 모음 음절 쓰기, 기본 모음이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 기본 모음 듣고 음가 익히기 / 기본 모음 따라 읽기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n기본 모음을 듣고 소리를 따라 읽어 보세요." },
+            { title: "2. 음절 구성 알기 / 기본 모음 구별하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n음절 완성하기 및 모음 음절 듣고 따라 하기·선택하기" }
+          ]
+        },
+        {
+          unit: "2과", title: "기본 자음", meta: "주제: 평음을 이해하고 사용하기 | 쓰기 과제: 기본 자음 음절 쓰기, 기본 자음이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 기본 자음 듣고 음가 익히기 / 기본 자음 따라 읽기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n기본 자음(평음)을 듣고 따라 읽어 보세요." },
+            { title: "2. 자음 음절 듣고 따라 하기 / 자음 음절 듣고 선택하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n자음 음절 듣고 따라 하기 및 구별 연습" }
+          ]
+        },
+        {
+          unit: "3과", title: "격음", meta: "주제: 격음을 이해하고 사용하기 | 쓰기 과제: 격음 음절 쓰기, 격음이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 격음 듣고 음가 익히기 / 격음 따라 읽기 / 격음 구별하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n격음(ㅋ, ㅌ, ㅍ, ㅊ)을 듣고 따라 읽어 보세요." },
+            { title: "2. 격음 음절 듣고 따라 하기 / 격음 음절 듣고 선택하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n격음 음절 듣고 따라 하기 및 선택하기" }
+          ]
+        },
+        {
+          unit: "4과", title: "경음", meta: "주제: 경음을 이해하고 사용하기 | 쓰기 과제: 경음 음절 쓰기, 경음이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 경음 듣고 음가 익히기 / 경음 따라 읽기 / 경음 구별하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n경음(ㄲ, ㄸ, ㅃ, ㅆ, ㅉ)을 듣고 따라 읽어 보세요." },
+            { title: "2. 경음 음절 듣고 따라 하기 / 경음 음절 듣고 선택하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n경음 음절 듣고 따라 하기 및 선택하기" }
+          ]
+        },
+        {
+          unit: "5과", title: "이중 모음 1", meta: "주제: 이중 모음 1을 이해하고 사용하기 | 쓰기 과제: 이중 모음 1 음절 쓰기, 이중 모음 1이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. ㅑ, ㅕ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n이중 모음 ㅑ, ㅕ 발음 듣고 따라 읽기" },
+            { title: "2. ㅛ, ㅠ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n이중 모음 ㅛ, ㅠ 발음 듣고 따라 읽기" },
+            { title: "3. ㅖ, ㅒ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n이중 모음 ㅖ, ㅒ 발음 듣고 따라 읽기" }
+          ]
+        },
+        {
+          unit: "6과", title: "이중 모음 2", meta: "주제: 이중 모음 2를 이해하고 사용하기 | 쓰기 과제: 이중 모음 2 음절 쓰기, 이중 모음 2가 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. ㅘ, ㅝ, ㅙ, ㅞ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n이중 모음 ㅘ, ㅝ, ㅙ, ㅞ 발음 듣고 따라 읽기" },
+            { title: "2. ㅚ, ㅟ, ㅢ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n이중 모음 ㅚ, ㅟ, ㅢ 발음 듣고 따라 읽기" }
+          ]
+        },
+        {
+          unit: "7과", title: "받침 1", meta: "주제: 받침 1을 이해하고 사용하기 | 쓰기 과제: 받침 1 음절 쓰기, 받침 1이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 받침 ㅁ, ㅇ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n받침 ㅁ, ㅇ 음절과 단어 발음을 듣고 따라 읽어 보세요." },
+            { title: "2. 받침 ㄴ, ㄹ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n받침 ㄴ, ㄹ 음절과 단어 발음을 듣고 따라 읽어 보세요." }
+          ]
+        },
+        {
+          unit: "8과", title: "받침 2", meta: "주제: 받침 2를 이해하고 사용하기 | 쓰기 과제: 받침 2가 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 받침 ㄱ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n받침 ㄱ 단어 듣고 따라 읽기" },
+            { title: "2. 받침 ㅂ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n받침 ㅂ 단어 듣고 따라 읽기" },
+            { title: "3. 받침 ㄷ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n받침 ㄷ 단어 듣고 따라 읽기" }
+          ]
+        },
+        {
+          unit: "9과", title: "겹받침", meta: "주제: 겹받침을 이해하고 사용하기 | 쓰기 과제: 겹받침이 포함된 단어 쓰기",
+          lessons: [
+            { title: "1. 겹받침 ㄺ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n겹받침 ㄺ 단어 발음 연습" },
+            { title: "2. 겹받침 ㄻ, ㅀ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n겹받침 ㄻ, ㅀ 단어 발음 연습" },
+            { title: "3. 겹받침 ㅄ, ㄵ, ㄶ 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n겹받침 ㅄ, ㄵ, ㄶ 단어 발음 연습" }
+          ]
+        },
+        {
+          unit: "10과", title: "연음", meta: "주제: 연음을 이해하고 사용하기 | 쓰기 과제: 연음이 포함된 단어와 표현 쓰기",
+          lessons: [
+            { title: "1. 기본 연음 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n기본 연음 발음 연습" },
+            { title: "2. 겹받침 연음 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n겹받침 연음 발음 연습" },
+            { title: "3. ㅎ 받침 연음 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\nㅎ 받침 연음 발음 연습" }
+          ]
+        },
+        {
+          unit: "11과", title: "표현 1", meta: "주제: 교실에서 자주 쓰는 표현을 이해하고 사용하기 | 쓰기 과제: 교실 표현 쓰기",
+          lessons: [
+            { title: "1. 교실 표현 1 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n교실 표현 1 듣고 따라 하기" },
+            { title: "2. 교실 표현 2 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n교실 표현 2 듣고 따라 하기" },
+            { title: "3. 교실 표현 3 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n교실 표현 3 듣고 따라 하기" }
+          ]
+        },
+        {
+          unit: "12과", title: "표현 2", meta: "주제: 한국어의 인사 표현을 이해하고 사용하기 | 쓰기 과제: 인사 표현 쓰기",
+          lessons: [
+            { title: "1. 인사 표현 1 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n인사 표현 1 듣고 따라 하기" },
+            { title: "2. 인사 표현 2 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n인사 표현 2 듣고 따라 하기" },
+            { title: "3. 인사 표현 3 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n인사 표현 3 듣고 따라 하기" },
+            { title: "4. 인사 표현 4 배우기 및 연습하기", audioUrl: "", docUrl: "#", script: "[오디오 텍스트]\n인사 표현 4 듣고 따라 하기" }
+          ]
+        }
+      ],
+      "세종학당 한국어 1": [
+        { unit: "1과", title: "저는 한국 사람이에요", meta: "주제: 자기소개 | 어휘: 나라, 직업 ①, 자기소개 | 문법: 이다, 은" },
+        { unit: "2과", title: "회사원이 아니에요", meta: "주제: 가족 | 어휘: 가족, 직업 ② | 문법: 이, 이 아니다" },
+        { unit: "3과", title: "저도 드라마를 좋아합니다", meta: "주제: 일상생활 | 어휘: 일상생활, 동사 ①, 형용사 ① | 문법: -습니다, -습니까, 을, 도" },
+        { unit: "4과", title: "여기가 지훈 씨의 학교입니까?", meta: "주제: 학교 | 어휘: 동사 ②, 장소 ①, 형용사 ② | 문법: 과, 하고, 의" },
+        { unit: "5과", title: "날씨가 좋지 않아요", meta: "주제: 날씨 | 어휘: 날씨, 계절 | 문법: -어요, -지 않다" },
+        { unit: "종합 1", title: "Part 3 종합 문제 1과~5과", meta: "1과 ~ 5과 종합 복습" },
+        { unit: "6과", title: "친구한테 편지를 써요", meta: "주제: 친구 | 어휘: 선물, 인사 | 문법: 에게, 한테, 만" },
+        { unit: "7과", title: "지금 어디에 있어요?", meta: "주제: 위치 | 어휘: 장소 ②, 사물, 위치 | 문법: (장소)에, 에서" },
+        { unit: "8과", title: "토요일에 친구를 만났어요", meta: "주제: 날짜 | 어휘: 숫자(한자어), 날짜 | 문법: -었-, (시간)에" },
+        { unit: "9과", title: "저는 수영을 못해요", meta: "주제: 운동 | 어휘: 운동, 부사 | 문법: 부터, -지 못하다" },
+        { unit: "10과", title: "같이 점심을 먹을까요?", meta: "주제: 약속 | 어휘: 숫자(고유어), 시간 | 문법: -을까, -읍시다, -고" },
+        { unit: "종합 2", title: "Part 3 종합 문제 6과~10과", meta: "6과 ~ 10과 종합 복습" },
+        { unit: "11과", title: "떡볶이는 매워서 잘 못 먹어요", meta: "주제: 음식 | 어휘: 음식, 주문, 맛 | 문법: -어서, -고 싶다" },
+        { unit: "12과", title: "운동화를 좀 보고 싶어요", meta: "주제: 쇼핑 | 어휘: 물건, 쇼핑 | 문법: -지만, 보다" },
+        { unit: "13과", title: "케이 팝(K-pop) 댄스를 출 수 있어요?", meta: "주제: 취미 | 어휘: 취미, 취미 활동 | 문법: -을 수 있다, -고 있다" },
+        { unit: "14과", title: "고향에 가기 전에 여행을 할 거예요", meta: "주제: 여행 | 어휘: 여행 장소, 여행 활동 | 문법: -기 전에, -으려고" },
+        { unit: "15과", title: "약을 먹은 후에 푹 쉬세요", meta: "주제: 건강 | 어휘: 신체, 치료, 증상 | 문법: -은 후에, -으세요" },
+        { unit: "종합 3", title: "Part 3 종합 문제 11과~15과", meta: "11과 ~ 15과 종합 복습" },
+        { unit: "16과", title: "여기에서 서울역까지 어떻게 가요?", meta: "주제: 교통 | 어휘: 교통수단, 교통수단 이용 | 문법: 에서, 까지, -으십시오" },
+        { unit: "17과", title: "집들이에 뭘 사 가야 돼요?", meta: "주제: 집들이 | 어휘: 집들이, 초대 | 문법: -어야 되다, -고요" },
+        { unit: "18과", title: "길이 막히니까 공연장까지 지하철로 갑시다", meta: "주제: 여가 | 어휘: 여가 활동, 문화생활 | 문법: 으로, -으니까" },
+        { unit: "19과", title: "저랑 같이 사러 가요", meta: "주제: 길 찾기 | 어휘: 장소, 방향, 이동 | 문법: -으러, 이랑" },
+        { unit: "20과", title: "어머니께서 꽃을 좋아하세요", meta: "주제: 방문 | 어휘: 높임말 | 문법: 께서, -으시-" },
+        { unit: "종합 4", title: "Part 3 종합 문제 16과~20과", meta: "16과 ~ 20과 종합 복습" }
+      ],
+      "세종학당 한국어 2": [
+        { unit: "1과", title: "비가 너무 많이 오네요", meta: "주제: 날씨 | 어휘: 기후, 날씨 | 문법: -겠-, -네" },
+        { unit: "2과", title: "동대문에 가 보세요", meta: "주제: 쇼핑 | 어휘: 장소, 장소의 상태 | 문법: 에게서, 한테서, -어 보다" },
+        { unit: "3과", title: "엄마 친구는 어떻게 생겼어요?", meta: "주제: 외모 | 어휘: 외모, 색깔 | 문법: -은, -는, 께" },
+        { unit: "4과", title: "불고기를 해 먹는 게 어때요?", meta: "주제: 장보기 | 어휘: 쇼핑, 양념, 식재료 | 문법: -는데 ①, -는 것" },
+        { unit: "5과", title: "주문할게요", meta: "주제: 주문 | 어휘: 주문, 식기, 계산 | 문법: -을게, -기" },
+        { unit: "종합 1", title: "Part 3 종합 문제 1과~5과", meta: "1과 ~ 5과 종합 복습" },
+        { unit: "6과", title: "휴가를 어떻게 보내기로 했어요?", meta: "주제: 휴가 | 어휘: 날짜, 관광·여행 | 문법: -은 적이 있다, -기로 하다" },
+        { unit: "7과", title: "찬 음식을 너무 많이 먹지 마세요", meta: "주제: 건강 | 어휘: 병원, 증상, 치료 | 문법: -게, -지 말다" },
+        { unit: "8과", title: "오늘 저녁에 뭐 할래요?", meta: "주제: 영화 | 어휘: 예매, 감정 표현 | 문법: -을래, 밖에" },
+        { unit: "9과", title: "주말마다 산에 가요", meta: "주제: 휴일 | 어휘: 여가, 빈도 | 문법: -는데 ②, 마다" },
+        { unit: "10과", title: "밤 10시 이후로는 조용히 할 것", meta: "주제: 학교생활 | 어휘: 자기소개, 수업, 기숙사 | 문법: -을 것, -을 수밖에 없다" },
+        { unit: "종합 2", title: "Part 3 종합 문제 6과~10과", meta: "6과 ~ 10과 종합 복습" },
+        { unit: "11과", title: "약속 장소에 가다가 돌아왔어요", meta: "주제: 공공서비스 | 어휘: 잃어버리기 쉬운 물건, 동작 | 문법: -다가, 에서부터" },
+        { unit: "12과", title: "사비나 씨는 어떤 사람을 좋아해요?", meta: "주제: 대인관계 | 어휘: 대인 관계, 성격·성향 | 문법: -은, -어 주다" },
+        { unit: "13과", title: "집안일을 나눠서 하는 게 어때?", meta: "주제: 가정생활 | 어휘: 집안일 | 문법: -는 동안에, -으면서" },
+        { unit: "14과", title: "한국에서 찜질방은 처음인데요", meta: "주제: 생활 편의시설 | 어휘: 편의시설, 편의시설 이용 | 문법: -지, -기 때문에, -음" },
+        { unit: "15과", title: "치킨 두 마리를 주문하려고 해요", meta: "주제: 배달 | 어휘: 배달 음식 주문, 수량 명사 | 문법: 에다가, -으면" },
+        { unit: "종합 3", title: "Part 3 종합 문제 11과~15과", meta: "11과 ~ 15과 종합 복습" },
+        { unit: "16과", title: "이 원피스를 입어 봐도 돼요?", meta: "주제: 의복 | 어휘: 옷 종류, 옷 쇼핑, 탈착 표현 | 문법: 처럼, -어도 되다" },
+        { unit: "17과", title: "저는 시간이 있을 때 요리해요", meta: "주제: 취미 | 어휘: 취미 | 문법: -을 때, -게 되다, 에게로" },
+        { unit: "18과", title: "대한 씨 딸이 태어난 지 벌써 1년이 됐어요?", meta: "주제: 모임 | 어휘: 모임, 감정 | 문법: -은 지, -어 있다, -는군" },
+        { unit: "19과", title: "저도 학교 근처로 이사할까 봐요", meta: "주제: 집 | 어휘: 집의 형태, 집의 구조 | 문법: -거나, 이나, -을까 보다" },
+        { unit: "20과", title: "이번 일요일은 좀 어려울 것 같아요", meta: "주제: 약속 | 어휘: 약속 | 문법: -을, -을 것 같다" },
+        { unit: "종합 4", title: "Part 3 종합 문제 16과~20과", meta: "16과 ~ 20과 종합 복습" }
+      ],
+      "세종학당 한국어 3A": [
+        { unit: "1과", title: "약속 시간에 늦으면 안 돼요", meta: "주제 및 어휘: 모임 | 문법: -으려면, -으면 되다/안 되다" },
+        { unit: "2과", title: "어제 친구를 우연히 기차역에서 만났어요", meta: "주제 및 어휘: 만남과 추억 | 문법: -어도, -잖아(요), -고 싶어 하다" },
+        { unit: "3과", title: "열심히 노력해야 목표를 이룰 수 있어요", meta: "주제 및 어휘: 계획과 바람 | 문법: -으나, -어야" },
+        { unit: "4과", title: "꾸준히 운동을 하면 건강해져요", meta: "주제 및 어휘: 자기 계발 | 문법: -는다, -어지다" },
+        { unit: "5과", title: "우리 팀이 이겨서 정말 신나더라", meta: "주제 및 어휘: 관람과 감상 | 문법: -니?, -어라, -자, -는구나, -더라, -더군(요)" },
+        { unit: "6과", title: "오랜만에 영화를 보니 정말 재미있었어요", meta: "주제 및 어휘: 취미 | 문법: -나 보다, -는가 보다, -으니" },
+        { unit: "7과", title: "여행을 가는 대신에 집에서 쉬는 것이 좋겠네요", meta: "주제 및 어휘: 휴식과 휴가 | 문법: -느라고, -자마자, -는 대신에" },
+        { unit: "8과", title: "궁금한 것은 인터넷 게시판에 댓글로 남겨 주세요", meta: "주제 및 어휘: 인터넷과 컴퓨터 | 문법: -어야겠-, -을 텐데" },
+        { unit: "9과", title: "제 친구는 성격이 활발해요", meta: "주제 및 어휘: 성격과 외모 | 문법: -었었-, -어 보이다, -거든¹" },
+        { unit: "10과", title: "공부면 공부, 운동이면 운동 정말 못하는 게 없는 것 같아요", meta: "주제 및 어휘: 능력과 평판 | 문법: -는 편이다, 같이" }
+      ],
+      "세종학당 한국어 3B": [
+        { unit: "11과", title: "채소를 사려거든 시장에 가세요", meta: "주제 및 어휘: 식품 | 문법: -기 위해, -거든²" },
+        { unit: "12과", title: "오늘은 제가 점심을 살 테니 새로 생긴 한식당에 가요", meta: "주제 및 어휘: 외식 | 문법: -을 테니, -도록" },
+        { unit: "13과", title: "고기를 양념에 넣고 나서 30분 기다립니다", meta: "주제 및 어휘: 요리 | 문법: -는 만큼, 만큼, -고 나다" },
+        { unit: "14과", title: "휴가철이 다 되어 가는데 휴가 계획은 세웠어요?", meta: "주제 및 어휘: 일정 | 문법: -어 가다/오다, -는다고¹" },
+        { unit: "15과", title: "여행을 가려고 인터넷에서 숙소를 찾는 중이에요", meta: "주제 및 어휘: 숙소 | 문법: -는 중이다, -는다고²" },
+        { unit: "16과", title: "여행 가방을 잃어버리지 않도록 가방에 이름표를 달았어요", meta: "주제 및 어휘: 여행 준비와 짐 싸기 | 문법: -어 가지고, -던데¹" },
+        { unit: "17과", title: "흰색 셔츠가 청바지와 잘 어울려요", meta: "주제 및 어휘: 의복 | 문법: -기는, -으면 좋겠다" },
+        { unit: "18과", title: "중고 소파를 사려다가 새 제품을 샀어요", meta: "주제 및 어휘: 생활용품 | 문법: -으려다가, -고 말다, -는 반면" },
+        { unit: "19과", title: "한국 예절에 대하여 조언해 주세요", meta: "주제 및 어휘: 인간관계와 예절 | 문법: -던, -는 탓에, 에 대하여" },
+        { unit: "20과", title: "내일 회의 준비는 다 됐어요?", meta: "주제 및 어휘: 사회생활 | 문법: -는다거나¹, -게 하다" }
+      ]
+    },
+
+    /* 3. 세종 한국어 */
+    "세종 한국어": {
+      "1A": [
+        { unit: "입문", title: "한글을 배워요", meta: "기능: 한글 배우기" },
+        { unit: "1단원", title: "안녕하세요? 저는 안나예요", meta: "주제: 자기소개 | 기능: 인사하기, 소개하기 | 어휘와 표현: 나라와 직업 | 문법: 이에요/예요, 은/는 | 활동: 인사하기, 자기소개 쓰기" },
+        { unit: "2단원", title: "전화번호가 뭐예요?", meta: "주제: 자기소개 | 기능: 묻고 답하기 | 어휘와 표현: 한자어 수 | 문법: 이/가, 이/가 아니에요 | 발음: 연음 | 활동: 전화번호 말하기, 친구 전화번호·이메일 주소 쓰기" },
+        { unit: "3단원", title: "제 가방은 책상 옆에 있어요", meta: "주제: 사물과 동작 | 기능: 묻고 답하기 | 어휘와 표현: 물건 | 문법: 이, 그, 저 / 에 있다, 없다 | 활동: 물건 이름과 위치 말하기, 방에 있는 물건과 위치 쓰기" },
+        { unit: "4단원", title: "한국어를 공부해요", meta: "주제: 사물과 동작 | 기능: 묻고 답하기 | 어휘와 표현: 기본 동사 | 문법: -아요/어요(서술, 의문), 을/를 | 발음: 억양(평서문, 의문문) | 활동: 동작 말하기, 오늘 하는 일 쓰기" },
+        { unit: "5단원", title: "빵하고 우유를 사요", meta: "주제: 물건 사기 | 기능: 묻고 답하기 | 어휘와 표현: 장소와 식품 | 문법: 에 가다, 하고 | 활동: 쇼핑 장소와 물건 말하기, 백화점에서 사는 물건 쓰기" },
+        { unit: "6단원", title: "사과 다섯 개 주세요", meta: "주제: 물건 사기 | 기능: 묻고 답하기 | 어휘와 표현: 고유어 수 | 문법: 단위 명사, -(으)세요 | 발음: 평파열음화 | 활동: 물건 개수와 가격 말하기, 편의점에서 사는 물건 쓰기" },
+        { unit: "7단원", title: "일곱 시에 시작해요", meta: "주제: 시간과 날씨 | 기능: 묻고 답하기 | 어휘와 표현: 날짜와 요일 | 문법: 에, ○ 시 ○ 분 | 활동: 날짜와 시간 말하기, 일과 쓰기" },
+        { unit: "8단원", title: "날씨가 더워요?", meta: "주제: 시간과 날씨 | 기능: 묻고 답하기 | 어휘와 표현: 날씨와 계절 | 문법: 안, ㅂ 불규칙 | 발음: 휴지 | 활동: 날씨와 계절 말하기, 고향 날씨에 대해 쓰기" },
+        { unit: "9단원", title: "공원에서 산책했어요", meta: "주제: 주말 활동 | 기능: 묻고 답하기 | 어휘와 표현: 주말 활동 | 문법: 에서, -았/었- | 활동: 주말에 한 일 말하기, 주말에 한 일 쓰기" },
+        { unit: "10단원", title: "우리 같이 놀이공원에 갈까요?", meta: "주제: 주말 활동 | 기능: 제안하기 | 어휘와 표현: 약속 | 문법: -고 싶다, -(으)ㄹ까요?(제안) | 발음: ㅎ 탈락 | 활동: 약속 제안하기, 친구에게 보내는 메시지 쓰기" }
+      ],
+      "1B": [
+        { unit: "1단원", title: "무슨 음식을 좋아해요?", meta: "주제: 좋아하는 것 | 기능: 묻고 답하기" },
+        { unit: "2단원", title: "도서관에 책을 빌리러 가요", meta: "주제: 좋아하는 것 | 기능: 소개하기" },
+        { unit: "3단원", title: "백화점에서 쇼핑할 거예요", meta: "주제: 쇼핑 | 기능: 계획하기" },
+        { unit: "4단원", title: "더 큰 사이즈는 없어요?", meta: "주제: 쇼핑 | 기능: 묘사하기" },
+        { unit: "5단원", title: "세종식당이 어디에 있어요?", meta: "주제: 교통과 이동 | 기능: 안내하기" },
+        { unit: "6단원", title: "한국미술관까지 어떻게 가요?", meta: "주제: 교통과 이동 | 기능: 묻고 답하기" },
+        { unit: "7단원", title: "제주도에 가려고 해요", meta: "주제: 여행 | 기능: 계획하기" },
+        { unit: "8단원", title: "지난번 여행보다 좋았어요", meta: "주제: 여행 | 기능: 서술하기, 비교하기" },
+        { unit: "9단원", title: "집에서 푹 쉬어야 해요", meta: "주제: 건강 | 기능: 설명하기, 조언하기" },
+        { unit: "10단원", title: "학교에 가기 전에 수영을 해요", meta: "주제: 건강 | 기능: 설명하기" },
+        { unit: "11단원", title: "한국 음식을 만들 수 있어요?", meta: "주제: 모임과 선물 | 기능: 제안하기, 권유하기" },
+        { unit: "12단원", title: "저는 지니 씨에게 팬을 선물할 거예요", meta: "주제: 모임과 선물 | 기능: 묻고 답하기" }
+      ],
+      "2A": [
+        { unit: "1단원", title: "저는 프로그램 만드는 일을 해요", meta: "주제: 새로운 만남 | 기능: 설명하기" },
+        { unit: "2단원", title: "등산을 하거나 운동 모임에 가요", meta: "주제: 새로운 만남 | 기능: 소개하기" },
+        { unit: "3단원", title: "요즘 아침마다 회의가 있어요", meta: "주제: 나의 일상 | 기능: 제안하기" },
+        { unit: "4단원", title: "청바지에다가 티셔츠를 입으려고 해요", meta: "주제: 나의 일상 | 기능: 조언하기" },
+        { unit: "5단원", title: "거실 창문이 커서 경치를 구경하기가 좋아요", meta: "주제: 나의 생활 공간 | 기능: 소개하기" },
+        { unit: "6단원", title: "커피를 마시면서 음악을 들어요", meta: "주제: 나의 생활 공간 | 기능: 소개하기" },
+        { unit: "7단원", title: "스트레스를 받으면 가슴이 답답해요", meta: "주제: 건강한 생활 | 기능: 설명하기" },
+        { unit: "8단원", title: "잠이 안 오면 가벼운 운동을 해 보세요", meta: "주제: 건강한 생활 | 기능: 제안하기" },
+        { unit: "9단원", title: "그럼 칼국수를 먹는 게 어때요?", meta: "주제: 내가 좋아하는 것 | 기능: 주문하기" },
+        { unit: "10단원", title: "그럼 저 까만 구두는 어때요?", meta: "주제: 내가 좋아하는 것 | 기능: 선호 표현하기, 물건 사기" },
+        { unit: "11단원", title: "한국을 여행한 적이 있어요?", meta: "주제: 즐거운 여행 | 기능: 조언 구하기" },
+        { unit: "12단원", title: "박물관에서 도장을 만들어 봤어요", meta: "주제: 즐거운 여행 | 기능: 서술하기" }
+      ],
+      "2B": [
+        { unit: "1단원", title: "이번 주 금요일에 동아리 모임 할래요?", meta: "주제: 친구와 함께하는 시간 | 기능: 제안하기, 권유하기" },
+        { unit: "2단원", title: "세종학당에서부터 걸어서 10분쯤 걸려요", meta: "주제: 친구와 함께하는 시간 | 기능: 안내하기" },
+        { unit: "3단원", title: "할머니께서 직접 만드신 목걸이예요", meta: "주제: 나에게 특별한 것 | 기능: 소개하기" },
+        { unit: "4단원", title: "세종학당에 오다가 중학교 때 친구를 만났어요", meta: "주제: 나에게 특별한 것 | 기능: 설명하기" },
+        { unit: "5단원", title: "공연 중에 핸드폰을 사용하지 마세요", meta: "주제: 지켜야 하는 예절 | 기능: 금지하기" },
+        { unit: "6단원", title: "여기에서 노트북을 사용해도 돼요?", meta: "주제: 지켜야 하는 예절 | 기능: 허락하기" },
+        { unit: "7단원", title: "마리 씨한테서 그 친구 이야기를 들었어요", meta: "주제: 다양한 성격과 특징 | 기능: 묘사하기" },
+        { unit: "8단원", title: "어렸을 때는 머리가 길었는데 지금은 짧은 머리가 편해요", meta: "주제: 다양한 성격과 특징 | 기능: 비교하기" },
+        { unit: "9단원", title: "저도 그런 사람을 만나고 싶은데요!", meta: "주제: 나의 희망 사항 | 기능: 설명하기" },
+        { unit: "10단원", title: "산악자전거는 조금 위험한 편이에요", meta: "주제: 나의 희망 사항 | 기능: 설명하기" },
+        { unit: "11단원", title: "처음엔 모르는 게 많아서 답답했어", meta: "주제: 좋은 변화 | 기능: 비교하기" },
+        { unit: "12단원", title: "난 너처럼 카페를 하고 싶어", meta: "주제: 좋은 변화 | 기능: 묻고 답하기" }
+      ],
+      "3A": [
+        { unit: "1단원", title: "그동안 어떻게 지냈니?", meta: "주제: 안부와 소식 | 기능: 묻고 답하기" },
+        { unit: "2단원", title: "요즘 좀 바쁘다고 해", meta: "주제: 안부와 소식 | 기능: 묻고 답하기" },
+        { unit: "3단원", title: "이번에 이사를 할까 해요", meta: "주제: 집과 집안일 | 기능: 설명하기" },
+        { unit: "4단원", title: "나는 거실 청소를 할 테니까 넌 주방 청소를 해 줘", meta: "주제: 집과 집안일 | 기능: 제안하기" },
+        { unit: "5단원", title: "환불하려면 영수증이 필요합니다", meta: "주제: 물건 교환과 수리 | 기능: 요청하기" },
+        { unit: "6단원", title: "새로 사려다가 수리해서 쓰고 있어요", meta: "주제: 물건 교환과 수리 | 기능: 설명하기" },
+        { unit: "7단원", title: "여자 친구하고 만난 지 곧 3년이 돼", meta: "주제: 기념일 | 기능: 설명하기" },
+        { unit: "8단원", title: "한글날을 기념하기 위해서 여러 가지 행사를 한다고 해", meta: "주제: 기념일 | 기능: 설명하기" },
+        { unit: "9단원", title: "비가 오면 오히려 기분이 좋아지는데요", meta: "주제: 감정과 건강 | 기능: 표현하기" },
+        { unit: "10단원", title: "오늘은 일찍 들어가도록 하세요", meta: "주제: 감정과 건강 | 기능: 설명하기, 조언하기" },
+        { unit: "11단원", title: "주말에는 집에서 쉬는 게 좋더라고요", meta: "주제: 즐거운 여가 생활 | 기능: 표현하기" },
+        { unit: "12단원", title: "이 영화를 꼭 보라고 추천하고 싶다", meta: "주제: 즐거운 여가 생활 | 기능: 서술하기, 표현하기" }
+      ],
+      "3B": [
+        { unit: "1단원", title: "할아버지, 할머니 이야기도 들어 드렸어요", meta: "주제: 특별한 나의 경험 | 기능: 소개하기" },
+        { unit: "2단원", title: "티켓을 구하는 게 쉽지 않았을 텐데 어떻게 구했어요?", meta: "주제: 특별한 나의 경험 | 기능: 소개하기" },
+        { unit: "3단원", title: "매운 음식을 진짜 잘 먹는구나", meta: "주제: 음식과 요리 | 기능: 표현하기" },
+        { unit: "4단원", title: "채소부터 씻어서 썰어 놓자", meta: "주제: 음식과 요리 | 기능: 설명하기" },
+        { unit: "5단원", title: "딴생각을 하다가 버스를 놓쳐 버렸어요", meta: "주제: 실수와 잘못 | 기능: 설명하기" },
+        { unit: "6단원", title: "제가 좀 참을걸 그랬어요", meta: "주제: 실수와 잘못 | 기능: 사과하기" },
+        { unit: "7단원", title: "캠핑을 같이 간다거나 친목 모임을 해요", meta: "주제: 멋진 휴가 | 기능: 소개하기, 권유하기" },
+        { unit: "8단원", title: "일하느라고 바빠서 오랫동안 못 갔어요", meta: "주제: 멋진 휴가 | 기능: 묻고 답하기" },
+        { unit: "9단원", title: "두 사람이 많이 부러운 모양이에요", meta: "주제: 한국에서의 특별한 날 | 기능: 표현하기" },
+        { unit: "10단원", title: "떡국을 한 그릇 다 먹었더니 배가 불러요", meta: "주제: 한국에서의 특별한 날 | 기능: 설명하기" },
+        { unit: "11단원", title: "자격증 준비나 외국어 공부도 미리 해 두면 좋을 거야", meta: "주제: 나의 진로 | 기능: 표현하기" },
+        { unit: "12단원", title: "한국으로 유학을 가려고 준비하는 중이에요", meta: "주제: 나의 진로 | 기능: 설명하기" }
+      ]
+    }
+  };
+
+  let currentBook = "한국어와 한국문화";
+  let currentLevel = "초급 1";
+
+  const bookTabsEl = document.getElementById("dfcc-book-tabs");
+  const levelTabsEl = document.getElementById("dfcc-level-tabs");
+  const unitListEl = document.getElementById("dfcc-unit-list");
+
+  function getDefaultLessons(unitObj) {
+    if (unitObj.lessons && unitObj.lessons.length > 0) {
+      return unitObj.lessons;
+    }
+    return [
+      {
+        title: `🎧 [대화 1] ${unitObj.title} - 오디오 및 텍스트`,
+        audioUrl: "",
+        docUrl: unitObj.pageUrl || "#",
+        script: `[${unitObj.unit} 대화 1 오디오 텍스트]\n(${unitObj.meta})\n\n여기에 워드프레스에 업로드한 오디오 대본 텍스트를 입력하거나 아래 문서 페이지 링크로 연결할 수 있습니다.`
+      },
+      {
+        title: `🎧 [대화 2] ${unitObj.title} - 오디오 및 텍스트`,
+        audioUrl: "",
+        docUrl: unitObj.pageUrl || "#",
+        script: `[${unitObj.unit} 대화 2 오디오 텍스트]\n\n여기에 대화 2 오디오 대본 텍스트를 입력합니다.`
+      },
+      {
+        title: `🎧 [듣고 말하기] ${unitObj.title} - 오디오 및 텍스트`,
+        audioUrl: "",
+        docUrl: unitObj.pageUrl || "#",
+        script: `[${unitObj.unit} 듣고 말하기 오디오 텍스트]\n\n여기에 듣고 말하기 오디오 대본 텍스트를 입력합니다.`
+      }
+    ];
+  }
+
+  function renderBookTabs() {
+    bookTabsEl.innerHTML = "";
+    Object.keys(courseData).forEach(bookName => {
+      const btn = document.createElement("button");
+      btn.className = "dfcc-book-btn" + (bookName === currentBook ? " active" : "");
+      btn.textContent = bookName;
+      btn.onclick = () => {
+        currentBook = bookName;
+        currentLevel = Object.keys(courseData[currentBook])[0];
+        renderBookTabs();
+        renderLevelTabs();
+        renderUnits();
+      };
+      bookTabsEl.appendChild(btn);
+    });
+  }
+
+  function renderLevelTabs() {
+    levelTabsEl.innerHTML = "";
+    const levels = Object.keys(courseData[currentBook]);
+    levels.forEach(levelName => {
+      const btn = document.createElement("button");
+      btn.className = "dfcc-level-btn" + (levelName === currentLevel ? " active" : "");
+      btn.textContent = levelName;
+      btn.onclick = () => {
+        currentLevel = levelName;
+        renderLevelTabs();
+        renderUnits();
+      };
+      levelTabsEl.appendChild(btn);
+    });
+  }
+
+  function renderUnits() {
+    unitListEl.innerHTML = "";
+    const units = courseData[currentBook][currentLevel] || [];
+
+    units.forEach((u) => {
+      const card = document.createElement("div");
+      card.className = "dfcc-unit-card";
+
+      const header = document.createElement("div");
+      header.className = "dfcc-unit-header";
+      header.innerHTML = `
+        <div class="dfcc-unit-title-wrap">
+          <div class="dfcc-unit-main">
+            <span class="dfcc-unit-num">${u.unit}</span>
+            <span class="dfcc-unit-title">${u.title}</span>
+          </div>
+          <div class="dfcc-unit-meta">${u.meta || ""}</div>
+        </div>
+        <div class="dfcc-unit-arrow">▼</div>
+      `;
+
+      const body = document.createElement("div");
+      body.className = "dfcc-unit-body";
+
+      const pageUrl = u.pageUrl || "#";
+      const lessons = getDefaultLessons(u);
+
+      let lessonsHtml = lessons.map((lesson, lIdx) => `
+        <div class="dfcc-lesson-item" data-lesson-idx="${lIdx}">
+          <button type="button" class="dfcc-lesson-title-btn">
+            <span>${lesson.title}</span>
+            <span>열기 ▾</span>
+          </button>
+          <div class="dfcc-lesson-content">
+            <div class="dfcc-audio-box">
+              <label>🔊 수업 오디오 듣기 (Audio)</label>
+              <audio controls preload="none" src="${lesson.audioUrl}"></audio>
+            </div>
+            <div class="dfcc-script-box">${lesson.script}</div>
+            <a class="dfcc-doc-link" href="${lesson.docUrl}" target="_blank">📄 워드프레스에서 전체 문서 페이지 열기 →</a>
+          </div>
+        </div>
+      `).join("");
+
+      body.innerHTML = `
+        <div class="dfcc-wp-page-bar">
+          <span>📌 <strong>${u.unit} ${u.title}</strong> - 학습할 세부 제목을 클릭하면 오디오와 텍스트가 나옵니다.</span>
+          <a href="${pageUrl}" class="dfcc-page-link-btn" target="_blank">해당 단원 페이지로 이동</a>
+        </div>
+        <div class="dfcc-lesson-list">
+          ${lessonsHtml}
+        </div>
+      `;
+
+      header.onclick = () => {
+        card.classList.toggle("open");
+      };
+
+      body.querySelectorAll(".dfcc-lesson-title-btn").forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const item = btn.parentElement;
+          item.classList.toggle("active");
+        };
+      });
+
+      card.appendChild(header);
+      card.appendChild(body);
+      unitListEl.appendChild(card);
+    });
+  }
+
+  renderBookTabs();
+  renderLevelTabs();
+  renderUnits();
+})();
+</script>
+</body>
+</html>
